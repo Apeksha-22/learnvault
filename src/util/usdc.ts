@@ -2,12 +2,10 @@
  * Utility functions for USDC token operations on Stellar
  */
 
-import { Contract, SorobanRpc } from "@stellar/stellar-sdk"
+import { Contract, rpc } from "@stellar/stellar-sdk"
 
 /**
  * Get the USDC contract ID from environment variables
- * @returns The USDC contract ID
- * @throws Error if USDC contract ID is not configured
  */
 export function getUSDCContractId(): string {
 	const contractId = import.meta.env.PUBLIC_USDC_CONTRACT_ID
@@ -23,12 +21,7 @@ export function getUSDCContractId(): string {
 
 /**
  * Mint test USDC tokens to a specified address
- * This function is only for testnet/development environments
- *
- * @param recipientAddress - The Stellar address to receive the USDC
- * @param amount - The amount of USDC to mint (default: 1000)
- * @returns Promise that resolves when minting is complete
- * @throws Error if minting fails
+ * (Currently uses CLI fallback until contract client is ready)
  */
 export async function mintTestUSDC(
 	recipientAddress: string,
@@ -37,40 +30,28 @@ export async function mintTestUSDC(
 	try {
 		const contractId = getUSDCContractId()
 
-		// Convert amount to stroops (7 decimals for USDC)
-		const amountStroops = amount * 10000000
+		// Convert to stroops safely (7 decimals)
+		const amountStroops = BigInt(Math.round(amount * 1e7))
 
-		// Get RPC URL from environment
 		const rpcUrl =
 			import.meta.env.PUBLIC_STELLAR_RPC_URL || "http://localhost:8000/rpc"
 
-		// Create RPC server instance
-		const server = new SorobanRpc.Server(rpcUrl)
-
-		// Create contract instance
+		// Setup RPC + Contract (kept for future use)
+		const server = new rpc.Server(rpcUrl)
 		const contract = new Contract(contractId)
 
-		// Build the mint transaction
-		// Note: This is a simplified version. In production, you would need to:
-		// 1. Build the transaction properly with the contract client
-		// 2. Sign it with the appropriate authority
-		// 3. Submit it to the network
-		// 4. Wait for confirmation
-
-		// For now, we'll throw an error directing users to use the CLI script
+		// 🔴 Placeholder until contract client + signing is implemented
 		throw new Error(
-			`Please use the CLI script to mint test USDC:\n\n` +
-				`./scripts/mint-test-usdc.sh ${recipientAddress} ${amount}\n\n` +
-				`This UI button will be fully functional once contract clients are generated.`,
+			`Minting via UI not implemented yet.\n\n` +
+				`Use CLI instead:\n` +
+				`./scripts/mint-test-usdc.sh ${recipientAddress} ${amount}\n`,
 		)
 
-		// TODO: Implement full minting flow once contract clients are available
-		// const result = await contract.call('mint', {
-		//   to: recipientAddress,
-		//   amount: amountStroops
-		// })
-
-		// return result
+		// ✅ FUTURE IMPLEMENTATION (example)
+		// const tx = await buildTransaction(...)
+		// const simulated = await server.simulateTransaction(tx)
+		// const signed = signTransaction(tx)
+		// await server.sendTransaction(signed)
 	} catch (error) {
 		if (error instanceof Error) {
 			throw error
@@ -81,24 +62,25 @@ export async function mintTestUSDC(
 
 /**
  * Get USDC balance for an address
- *
- * @param address - The Stellar address to check
- * @returns Promise that resolves to the USDC balance
  */
 export async function getUSDCBalance(address: string): Promise<number> {
 	try {
 		const contractId = getUSDCContractId()
+
 		const rpcUrl =
 			import.meta.env.PUBLIC_STELLAR_RPC_URL || "http://localhost:8000/rpc"
 
-		const server = new SorobanRpc.Server(rpcUrl)
+		const server = new rpc.Server(rpcUrl)
 		const contract = new Contract(contractId)
 
-		// TODO: Implement balance checking once contract clients are available
-		// const balance = await contract.call('balance', { id: address })
-		// return balance / 10000000 // Convert from stroops to USDC
+		// 🔴 Placeholder until contract client is ready
+		throw new Error(
+			"Balance checking not implemented yet. Requires contract client integration.",
+		)
 
-		throw new Error("Balance checking not yet implemented")
+		// ✅ FUTURE IMPLEMENTATION
+		// const result = await contract.call("balance", { id: address })
+		// return Number(result) / 1e7
 	} catch (error) {
 		if (error instanceof Error) {
 			throw error
