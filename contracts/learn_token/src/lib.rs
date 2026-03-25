@@ -46,14 +46,21 @@ impl LearnToken {
         admin.require_auth();
 
         env.storage().instance().set(&ADMIN_KEY, &admin);
-        env.storage().instance().set(&NAME_KEY, &String::from_str(&env, "LearnToken"));
-        env.storage().instance().set(&SYMBOL_KEY, &String::from_str(&env, "LRN"));
+        env.storage()
+            .instance()
+            .set(&NAME_KEY, &String::from_str(&env, "LearnToken"));
+        env.storage()
+            .instance()
+            .set(&SYMBOL_KEY, &String::from_str(&env, "LRN"));
         env.storage().instance().set(&DECIMALS_KEY, &7u32);
         env.storage().instance().set(&DataKey::TotalSupply, &0i128);
     }
 
     pub fn mint(env: Env, to: Address, amount: i128) {
-        let admin: Address = env.storage().instance().get(&ADMIN_KEY)
+        let admin: Address = env
+            .storage()
+            .instance()
+            .get(&ADMIN_KEY)
             .unwrap_or_else(|| panic_with_error!(&env, LRNError::NotInitialized));
         admin.require_auth();
 
@@ -63,23 +70,41 @@ impl LearnToken {
 
         let balance_key = DataKey::Balance(to.clone());
         let current_balance: i128 = env.storage().persistent().get(&balance_key).unwrap_or(0);
-        env.storage().persistent().set(&balance_key, &(current_balance + amount));
+        env.storage()
+            .persistent()
+            .set(&balance_key, &(current_balance + amount));
 
-        let total_supply: i128 = env.storage().instance().get(&DataKey::TotalSupply).unwrap_or(0);
-        env.storage().instance().set(&DataKey::TotalSupply, &(total_supply + amount));
+        let total_supply: i128 = env
+            .storage()
+            .instance()
+            .get(&DataKey::TotalSupply)
+            .unwrap_or(0);
+        env.storage()
+            .instance()
+            .set(&DataKey::TotalSupply, &(total_supply + amount));
 
-        LRNMinted { learner: to, amount }.publish(&env);
+        LRNMinted {
+            learner: to,
+            amount,
+        }
+        .publish(&env);
     }
 
     pub fn set_admin(env: Env, new_admin: Address) {
-        let admin: Address = env.storage().instance().get(&ADMIN_KEY)
+        let admin: Address = env
+            .storage()
+            .instance()
+            .get(&ADMIN_KEY)
             .unwrap_or_else(|| panic_with_error!(&env, LRNError::NotInitialized));
         admin.require_auth();
         env.storage().instance().set(&ADMIN_KEY, &new_admin);
     }
 
     pub fn balance(env: Env, account: Address) -> i128 {
-        env.storage().persistent().get(&DataKey::Balance(account)).unwrap_or(0)
+        env.storage()
+            .persistent()
+            .get(&DataKey::Balance(account))
+            .unwrap_or(0)
     }
 
     pub fn reputation_score(env: Env, account: Address) -> i128 {
@@ -87,7 +112,10 @@ impl LearnToken {
     }
 
     pub fn total_supply(env: Env) -> i128 {
-        env.storage().instance().get(&DataKey::TotalSupply).unwrap_or(0)
+        env.storage()
+            .instance()
+            .get(&DataKey::TotalSupply)
+            .unwrap_or(0)
     }
 
     pub fn decimals(env: Env) -> u32 {

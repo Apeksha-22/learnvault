@@ -14,8 +14,8 @@
 //! Implements: https://github.com/bakeronchain/learnvault/issues/11
 
 use soroban_sdk::{
-    contract, contracterror, contractimpl, contracttype, panic_with_error, symbol_short, Address,
-    Env, String, Symbol,
+    Address, Env, String, Symbol, contract, contracterror, contractimpl, contracttype,
+    panic_with_error, symbol_short,
 };
 
 // ---------------------------------------------------------------------------
@@ -225,7 +225,7 @@ impl GovernanceToken {
 mod test {
     extern crate std;
 
-    use soroban_sdk::{testutils::Address as _, Address, Env, IntoVal, String};
+    use soroban_sdk::{Address, Env, IntoVal, String, testutils::Address as _};
 
     use crate::{GOVError, GovernanceToken, GovernanceTokenClient};
 

@@ -1,7 +1,10 @@
 extern crate std;
 
-use soroban_sdk::{testutils::{Address as _, Events as _}, Address, Env, IntoVal, String};
 use crate::{LRNError, LearnToken, LearnTokenClient};
+use soroban_sdk::{
+    Address, Env, IntoVal, String,
+    testutils::{Address as _, Events as _},
+};
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -101,9 +104,9 @@ fn set_admin_updates_admin() {
     let (_, _, client) = setup(&e);
     let new_admin = Address::generate(&e);
     client.set_admin(&new_admin);
-    
+
     // Auth ko naye admin ke liye mock karna padega mint ke liye
-    e.mock_all_auths(); 
+    e.mock_all_auths();
     let learner = Address::generate(&e);
     client.mint(&learner, &10);
     assert_eq!(client.balance(&learner), 10);
