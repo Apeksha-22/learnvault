@@ -16,6 +16,7 @@ jobs:
   frontend:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -26,8 +27,9 @@ jobs:
           node-version: lts/*
           cache: npm
 
+      # ✅ FIXED HERE
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --include=optional
 
       - name: Lint
         run: npm run lint
@@ -37,6 +39,10 @@ jobs:
 
       - name: Type check
         run: npx tsc --noEmit
+
+      # ✅ Extra safety (rollup/esbuild issues fix)
+      - name: Rebuild native deps
+        run: npm rebuild
 
       - name: Build
         run: npm run build
