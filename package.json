@@ -74,5 +74,8 @@
       "prettier --write --ignore-unknown"
     ]
   },
-  "prettier": "@theahaco/ts-config/prettier"
+  "prettier": "@theahaco/ts-config/prettier",
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "^4.60.0"
+  }
 }
