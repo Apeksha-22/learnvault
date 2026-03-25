@@ -26,7 +26,7 @@ body:
     attributes:
       label: Rust error (if any)
       description: Paste compiler/runtime error output.
-      placeholder: error[E0XXX]: ...
+      placeholder: "error[E0XXX]: ..."
     validations:
       required: false
   - type: textarea
